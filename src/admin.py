@@ -17,11 +17,11 @@ class UserModelView(ModelView):
 
 class CharactersModelView(ModelView):
     column_auto_selected_related = True
-    column_list = ['id', 'name', 'height', 'gender', 'skin', 'birth_year', 'favorite_by']
+    column_list = ['id_character', 'name', 'height', 'gender', 'skin', 'birth_year', 'favorite_by']
 
 class PlanetMmodelView(ModelView):
     column_auto_selected_related = True
-    column_list = ['id', 'name', 'population', 'climate', 'gravity', 'diameter', 'favorite_by']
+    column_list = ['id_planet', 'name', 'population', 'climate', 'gravity', 'diameter', 'favorite_by']
 
 def setup_admin(app):
     app.secret_key = os.environ.get('FLASK_APP_KEY', 'sample key')
