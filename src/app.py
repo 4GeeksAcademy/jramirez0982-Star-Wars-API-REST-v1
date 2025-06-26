@@ -68,11 +68,11 @@ def create_user():
     body = request.get_json(silent=True)
     if body is None:
         return jsonify({'msg': ' Debes enviar info en el body'}), 400
-    if 'name' is None:
+    if 'name' not in body:
         return jsonify({'msg': f'el campo NAME es obligatorio'}), 400
-    if 'password' is None:
+    if 'password' not in body:
         return jsonify({'msg': f'el campo PASSWORD es obligatorio'}), 400
-    if 'email' is None:
+    if 'email' not in body:
         return jsonify({'msg': f'el campo EMAIL es obligatorio'}), 400
     
     new_user = User()
@@ -204,6 +204,94 @@ def delete_favorite_character(id_user, id_character):
             db.session.commit()
         
     return jsonify({'msg': 'Personaje favorito borrado'})
+
+# [POST] crear planetas
+
+@app.route('/planet', methods=['POST'])
+def create_planet():
+    body = request.get_json(silent=True)
+    
+    if body is None:
+        return jsonify({'msg': 'Debe enviar informacion del planeta en el body'}), 400
+    if 'name' not in body:
+        return jsonify({'msg': 'debes enviar un NAME para el planeta'}), 400
+    if 'population' not in body:
+        return jsonify({'msg': 'debes enviar la POPULATION el planeta'}), 400
+    if 'climate' not in body:
+        return jsonify({'msg': 'Debes enviar el CLIMATE del planeta'}), 400
+    if 'gravity' not in body:
+        return jsonify({'msg': 'Debes enviar el GRAVITY del planeta'}), 400
+    if 'diameter' not in body:
+        return jsonify({'msg': 'Debes enviar el DIAMETER del planeta'}), 400
+    
+    new_planet = Planets()
+    new_planet.name = body['name']
+    new_planet.population = body['population']
+    new_planet.climate = body['climate']
+    new_planet.gravity = body['gravity']
+    new_planet.diameter = body['diameter']
+    
+    db.session.add(new_planet)
+    db.session.commit()
+    
+    return jsonify({'msg': 'OK', 'planet': new_planet.serialize()}), 200
+
+#[POST] CREAR CHARACTERS
+@app.route('/character', methods = ['POST'])
+def create_character():
+    body = request.get_json(silent = True)
+    if body is None:
+        return jsonify({'msg': 'debes enviar la informacion del personaje'}), 400
+    if 'name' not in body:
+        return jsonify({'msg': 'debes enviar un name para el personaje'}), 400
+    if 'height' not in body:
+        return jsonify({'msg': 'Debes enviar el height del personaje'}), 400
+    if 'gender' not in body:
+        return jsonify({'msg': 'debes enviar el gender del personaje'})
+    if 'skin' not in body:
+        return jsonify({'msg': 'debes enviar el skin del personaje'})
+    if 'birth_year' not in body:
+        return jsonify({'msg': ' debes enviar el birth year del personaje'})
+    
+    new_character = Characters()
+    new_character.name = body['name']
+    new_character.height = body['height']
+    new_character.gender = body['gender']
+    new_character.skin = body['skin']
+    new_character.birth_year = body['birth_year']
+
+    db.session.add(new_character)
+    db.session.commit()
+
+    return jsonify({'msg': 'OK', 'character': new_character.serialize()})
+
+#[PUT] MODIFICAR REGISTRO DE PLANETAS
+@app.route('/planet/<int:id_planet>', methods=['PUT'])
+def update_planet(id_planet):
+    planet_to_update = Planets.query.get(id_planet)
+    
+    if planet_to_update is None:
+        return jsonify({'msg': 'El id del planeta no fue encontrado'}), 404
+    
+    body = request.get_json()
+    if 'name' in body:
+        planet_to_update.name = body['name']
+    if 'population' in body:
+        planet_to_update.population = body['population']
+    if 'climate' in body:
+        planet_to_update.climate = body['climate']
+    if 'gravity' in body:
+        planet_to_update.gravity = body['gravity']
+    if 'diameter' in body:
+        planet_to_update.diameter = body['diameter']
+     
+    db.session.commit()
+
+    return jsonify({'msg': 'ok', 'planet': planet_to_update.serialize()})
+
+#[PUT] Modificar informacion de Personajes (characters)
+
+  
 
 
 # this only runs if `$ python src/app.py` is executed
